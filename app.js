@@ -222,14 +222,14 @@ async function generatePrepPackFromApi(input, seed) {
         {
           role: "system",
           content:
-            "You are an expert interview coach specializing in all industries (tech, manufacturing, trades, healthcare, etc.). Create a highly realistic, tailored interview prep pack. Return ONLY valid JSON with top-level keys: meta, roleSummary, researchChecklist, likelyQuestions, answerGuidance, dressCode, behaviorTips, questionsToAsk, prepChecklist, confidenceBoosters. meta must include title, generatedAt, summary. likelyQuestions must be an array of objects with question, why, answer. CRITICAL: Analyze the specific job title (e.g. 'CNC Press Brake Operator' vs 'Software Engineer'). If it's a hands-on, trade, or technical role, ask about specific machinery, safety protocols, reading blueprints, or precise technical skills. Do not use generic corporate advice (like 'cross-functional collaboration') for manual/trade jobs. Match the dress code and behavior to the exact industry context. Do not use markdown inside the JSON.",
+            "You are a master interview coach and veteran industry expert. Your job is to create highly accurate, painfully realistic interview prep packs for ANY industry. Return ONLY valid JSON (keys: meta, roleSummary, researchChecklist, likelyQuestions, answerGuidance, dressCode, behaviorTips, questionsToAsk, prepChecklist, confidenceBoosters). Do NOT use markdown. \n\nCRITICAL RULES:\n1. If the job is manual, trade, manufacturing (e.g. CNC Operator, Plumber, Welder, Chef), you MUST act like a veteran foreman. Ask deeply technical questions about specific machine brands, tolerances, schematics, safety hazards (OSHA), and physical materials.\n2. BAN CORPORATE BUZZWORDS for trade jobs. Do not use words like 'cross-functional', 'stakeholder', 'synergy', 'ambiguity', or 'trade-offs' for a mechanic or machinist.\n3. Dress code must be accurate (e.g. steel-toe boots, safety glasses, no loose clothing for a CNC machinist).",
         },
         {
           role: "user",
           content: JSON.stringify({
             input,
             seed,
-            instructions: "Deeply analyze this specific job title and industry. Generate hyper-specific likely questions that a hiring manager for this EXACT role would ask to verify technical competence and experience. Avoid generic fluff.",
+            instructions: "Identify the EXACT sector of this job. If it is trade/manufacturing/practical, make the questions highly technical and scenario-based on the shop floor. What button sequence solves a fault? How do you read this blueprint? Make the answers specific to the tools and machinery they use.",
           }),
         },
       ],
@@ -285,35 +285,62 @@ function generatePrepPack(input, seed) {
     "Note the interviewers' likely goals and what signals they probably want to hear.",
   ]);
 
-  const likelyQuestions = unique([
-    {
-      question: `Walk me through a project where you had to make a trade-off under pressure.`,
-      why: `They want proof you can balance quality, speed, and constraints as a ${seniority} hire.`,
-      answer: `Lead with the outcome, explain the constraint, then show how you chose a path and what happened after launch.`,
-    },
-    {
-      question: `How do you prioritize when everything feels important?`,
-      why: `This reveals how you structure ambiguous work and protect focus.`,
-      answer: `Use a simple prioritization framework: impact, urgency, effort, and alignment to business goals.`,
-    },
-    {
-      question: `Tell me about feedback you disagreed with and how you handled it.`,
-      why: `Interviewers are checking self-awareness and collaboration.`,
-      answer: `Show that you listened, asked clarifying questions, and made the final decision based on evidence rather than ego.`,
-    },
-    {
-      question: input.companyName
-        ? `Why do you want to join ${input.companyName}?`
-        : `Why this company and why now?`,
-      why: `They want to know whether you have specific motivation beyond a generic job search.`,
-      answer: `Connect the company's work to your background, the team's challenges, and the growth you want next.`,
-    },
-    {
-      question: `Tell me about a time you influenced people without formal authority.`,
-      why: `This is a strong proxy for seniority, especially in cross-functional roles.`,
-      answer: `Share how you aligned stakeholders, built trust, and moved the work forward.`,
-    },
-  ]).slice(0, 4 + (seed % 2));
+  const isTradeJob = /cnc|operator|machinist|welder|plumber|electrician|mechanic|technician|driver|warehouse|manufacturing/i.test(role);
+
+  let likelyQuestions = [];
+  if (isTradeJob) {
+    likelyQuestions = likelyQuestions.concat([
+      {
+        question: `Walk me through your process for setting up a machine for a new blueprint or tolerance.`,
+        why: `They need to know you are meticulous about calibration, reading schematics, and preventing waste.`,
+        answer: `Explain your step-by-step setup: verifying material, interpreting the drawing, setting the stops, and running a test piece before starting the batch.`,
+      },
+      {
+        question: `Tell me about a time you noticed a safety hazard on the floor. What did you do?`,
+        why: `Safety is the #1 priority in trade/manufacturing. They want proof you follow protocols (OSHA/HSE) without hesitation.`,
+        answer: `Describe the hazard, how you immediately stopped work or isolated the area, reported it to the supervisor, and documented it.`,
+      },
+      {
+        question: `Describe a situation where a tool or machine broke down mid-job. How did you handle the delay?`,
+        why: `They want to see your troubleshooting skills and how you manage production pressure.`,
+        answer: `Mention how you safely powered down, assessed if it was a quick fix or needed maintenance, informed the shift manager, and found alternative work while waiting.`,
+      },
+    ]);
+  } else {
+    likelyQuestions = likelyQuestions.concat([
+      {
+        question: `Walk me through a project where you had to make a trade-off under pressure.`,
+        why: `They want proof you can balance quality, speed, and constraints as a ${seniority} hire.`,
+        answer: `Lead with the outcome, explain the constraint, then show how you chose a path and what happened after launch.`,
+      },
+      {
+        question: `How do you prioritize when everything feels important?`,
+        why: `This reveals how you structure ambiguous work and protect focus.`,
+        answer: `Use a simple prioritization framework: impact, urgency, effort, and alignment to business goals.`,
+      },
+      {
+        question: `Tell me about feedback you disagreed with and how you handled it.`,
+        why: `Interviewers are checking self-awareness and collaboration.`,
+        answer: `Show that you listened, asked clarifying questions, and made the final decision based on evidence rather than ego.`,
+      },
+      {
+        question: `Tell me about a time you influenced people without formal authority.`,
+        why: `This is a strong proxy for seniority, especially in cross-functional roles.`,
+        answer: `Share how you aligned stakeholders, built trust, and moved the work forward.`,
+      }
+    ]);
+  }
+
+  // Add the universal company motivation question
+  likelyQuestions.push({
+    question: input.companyName
+      ? `Why do you want to join ${input.companyName}?`
+      : `Why this company and why now?`,
+    why: `They want to know whether you have specific motivation beyond a generic job search.`,
+    answer: `Connect the company's work to your background, the team's challenges, and the growth you want next.`,
+  });
+
+  likelyQuestions = unique(likelyQuestions).slice(0, 4 + (seed % 2));
 
   const answerGuidance = unique([
     "Answer in a shape: context, action, result, and reflection.",
