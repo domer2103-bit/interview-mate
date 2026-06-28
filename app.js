@@ -222,14 +222,14 @@ async function generatePrepPackFromApi(input, seed) {
         {
           role: "system",
           content:
-            "You create practical interview prep packs. Return only valid JSON with top-level keys meta, roleSummary, researchChecklist, likelyQuestions, answerGuidance, dressCode, behaviorTips, questionsToAsk, prepChecklist, confidenceBoosters. meta must include title, generatedAt, summary. likelyQuestions must be an array of objects with question, why, answer. Keep the advice organized, specific, and actionable. Do not use markdown.",
+            "You are an expert interview coach specializing in all industries (tech, manufacturing, trades, healthcare, etc.). Create a highly realistic, tailored interview prep pack. Return ONLY valid JSON with top-level keys: meta, roleSummary, researchChecklist, likelyQuestions, answerGuidance, dressCode, behaviorTips, questionsToAsk, prepChecklist, confidenceBoosters. meta must include title, generatedAt, summary. likelyQuestions must be an array of objects with question, why, answer. CRITICAL: Analyze the specific job title (e.g. 'CNC Press Brake Operator' vs 'Software Engineer'). If it's a hands-on, trade, or technical role, ask about specific machinery, safety protocols, reading blueprints, or precise technical skills. Do not use generic corporate advice (like 'cross-functional collaboration') for manual/trade jobs. Match the dress code and behavior to the exact industry context. Do not use markdown inside the JSON.",
         },
         {
           role: "user",
           content: JSON.stringify({
             input,
             seed,
-            instructions: "Tailor the pack to the role and keep the tone practical and concise.",
+            instructions: "Deeply analyze this specific job title and industry. Generate hyper-specific likely questions that a hiring manager for this EXACT role would ask to verify technical competence and experience. Avoid generic fluff.",
           }),
         },
       ],
