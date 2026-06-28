@@ -1,0 +1,12 @@
+{
+  "name": "interview-mate",
+  "version": "1.0.0",
+  "description": "Interview prep pack generator — vanilla HTML/CSS/JS",
+  "scripts": {
+    "build": "cp -r index.html styles.css app.js dist/ && echo 'Build complete: dist/ is ready'",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
