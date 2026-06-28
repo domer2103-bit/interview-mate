@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interview Mate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">IM</div>
+      <div>
+        <div class="brand-name">Interview Mate</div>
+        <div class="brand-tag">Practical interview prep packs, tailored fast</div>
+      </div>
+    </div>
+    <nav class="top-actions">
+      <a href="#prep-form" class="ghost-link">Build a pack</a>
+      <a href="#results" class="ghost-link">View result</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">Free &amp; instant</span>
+        <h1>Generate an interview prep pack that feels made for the role, not copied from a blog.</h1>
+        <p>
+          Enter a job title plus a few details like seniority, company, and interview type.
+          The app builds a structured prep pack with research priorities, likely questions, answer guidance, and a final
+          checklist.
+        </p>
+
+        <div class="hero-stats">
+          <div>
+            <strong>8</strong>
+            <span>prep sections</span>
+          </div>
+          <div>
+            <strong>1 click</strong>
+            <span>copy or download</span>
+          </div>
+          <div>
+            <strong>Saved locally</strong>
+            <span>history in the browser</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="preview-card">
+        <div class="preview-card-head">
+          <span>Example preview</span>
+          <span class="pill">Senior product designer</span>
+        </div>
+        <div class="preview-mini">
+          <h3>Role summary</h3>
+          <p>Interviewers will look for product judgment, cross-functional collaboration, and the ability to explain
+            trade-offs clearly.</p>
+        </div>
+        <div class="preview-mini">
+          <h3>Likely question</h3>
+          <p>“Tell me about a time you changed a design after getting conflicting feedback from product and
+            engineering.”</p>
+        </div>
+        <div class="preview-mini focus">
+          <h3>Prep focus</h3>
+          <p>Rehearse 3 stories, review the company product, and prepare 4 smart questions for the interviewer.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="workspace">
+      <div class="panel form-panel">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Start here</span>
+            <h2 id="prep-form">Build your prep pack</h2>
+          </div>
+          <button id="regenerateBtn" class="secondary-btn" type="button">Regenerate</button>
+        </div>
+
+        <form id="prepForm" class="prep-form">
+          <label>
+            <span>Job title *</span>
+            <input name="jobTitle" type="text" placeholder="Product Designer" required />
+          </label>
+
+          <label>
+            <span>Seniority</span>
+            <select name="seniority">
+              <option value="">Select level</option>
+              <option>Junior</option>
+              <option>Mid-level</option>
+              <option selected>Senior</option>
+              <option>Lead</option>
+              <option>Principal</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Company name</span>
+            <input name="companyName" type="text" placeholder="Google" />
+          </label>
+
+          <label>
+            <span>Industry</span>
+            <input name="industry" type="text" placeholder="Technology, healthcare, finance..." />
+          </label>
+
+          <label>
+            <span>Location</span>
+            <input name="location" type="text" placeholder="London or Remote" />
+          </label>
+
+          <label>
+            <span>Interview type</span>
+            <select name="interviewType">
+              <option>General screen</option>
+              <option>Hiring manager</option>
+              <option>Panel</option>
+              <option selected>Final round</option>
+              <option>Technical</option>
+              <option>Behavioral</option>
+            </select>
+          </label>
+
+          <label class="full">
+            <span>User goal</span>
+            <input name="userGoal" type="text"
+              placeholder="Nail the final round and speak confidently about trade-offs" />
+          </label>
+
+          <label class="full">
+            <span>Extra notes</span>
+            <textarea name="extraNotes" rows="4"
+              placeholder="Include anything else you want the prep pack to account for"></textarea>
+          </label>
+
+          <button class="primary-btn full" type="submit">Generate my prep pack</button>
+        </form>
+
+        <div class="form-footnote">
+          Packs are generated instantly in your browser. No data is stored or sent anywhere — your inputs stay private.
+        </div>
+      </div>
+
+      <aside class="panel history-panel">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Saved history</span>
+            <h2>Recent prep sessions</h2>
+          </div>
+          <button id="clearHistoryBtn" class="text-btn" type="button">Clear</button>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </aside>
+    </section>
+
+    <section id="results" class="results-shell panel">
+      <div class="section-head results-head">
+        <div>
+          <span class="eyebrow">Results</span>
+          <h2>Your prep pack</h2>
+          <p id="resultsSummary">Fill in the form to generate a tailored pack.</p>
+        </div>
+        <div class="actions-row">
+          <button id="copyBtn" class="secondary-btn" type="button" disabled>Copy</button>
+          <button id="downloadBtn" class="secondary-btn" type="button" disabled>Download</button>
+          <button id="saveBtn" class="primary-btn" type="button" disabled>Save session</button>
+        </div>
+      </div>
+
+      <div id="resultsGrid" class="results-grid hidden">
+        <article class="result-card wide">
+          <div class="card-head">
+            <h3>Role summary</h3>
+            <span class="pill accent">Overview</span>
+          </div>
+          <p id="roleSummary"></p>
+        </article>
+
+        <article class="result-card">
+          <div class="card-head">
+            <h3>Research checklist</h3>
+            <span class="pill">Focus areas</span>
+          </div>
+          <ul id="researchChecklist" class="bullet-list"></ul>
+        </article>
+
+        <article class="result-card">
+          <div class="card-head">
+            <h3>Likely questions</h3>
+            <span class="pill">Interview practice</span>
+          </div>
+          <div id="likelyQuestions" class="qa-stack"></div>
+        </article>
+
+        <article class="result-card">
+          <div class="card-head">
+            <h3>How to answer</h3>
+            <span class="pill">Response strategy</span>
+          </div>
+          <ul id="answerGuidance" class="bullet-list"></ul>
+        </article>
+
+        <article class="result-card">
+          <div class="card-head">
+            <h3>Dress advice</h3>
+            <span class="pill">Presentation</span>
+          </div>
+          <p id="dressCode" class="highlight-copy"></p>
+        </article>
+
+        <article class="result-card">
+          <div class="card-head">
+            <h3>Behavior and body language</h3>
+            <span class="pill">Presence</span>
+          </div>
+          <ul id="behaviorTips" class="bullet-list"></ul>
+        </article>
+
+        <article class="result-card">
+          <div class="card-head">
+            <h3>Questions to ask</h3>
+            <span class="pill">Ask back</span>
+          </div>
+          <ul id="questionsToAsk" class="bullet-list"></ul>
+        </article>
+
+        <article class="result-card">
+          <div class="card-head">
+            <h3>24-hour checklist</h3>
+            <span class="pill">Final prep</span>
+          </div>
+          <ul id="prepChecklist" class="checklist"></ul>
+        </article>
+
+        <article class="result-card callout">
+          <div class="card-head">
+            <h3>Confidence boosters</h3>
+            <span class="pill accent">Final note</span>
+          </div>
+          <ul id="confidenceBoosters" class="bullet-list"></ul>
+        </article>
+      </div>
+
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">IM</div>
+        <h3>No prep pack yet</h3>
+        <p>Your result will appear here after you generate a pack from the form above.</p>
+      </div>
+    </section>
+  </main>
+
+  <template id="historyItemTemplate">
+    <button class="history-item" type="button">
+      <div>
+        <strong></strong>
+        <span></span>
+      </div>
+      <span class="pill"></span>
+    </button>
+  </template>
+
+  <script src="./app.js"></script>
+</body>
+
+</html>
