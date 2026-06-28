@@ -215,7 +215,7 @@ async function generatePrepPackFromApi(input, seed) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "gpt-4.1-mini",
+      model: "gpt-4o-mini",
       temperature: 0.7,
       response_format: { type: "json_object" },
       messages: [
